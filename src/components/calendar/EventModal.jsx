@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleModal, addEvent } from '../../features/calendarSlice';
 
@@ -13,24 +13,46 @@ const EventModal = () => {
     e.preventDefault();
     if (title.trim()) {
       dispatch(addEvent({ 
-        id: Date.now().toString(),
         title: title.trim(), 
         type,
-        date: selectedDate 
       }));
       dispatch(toggleModal());
       setTitle('');
     }
   };
 
+  const handleClose = useCallback(() => {
+    dispatch(toggleModal());
+  }, [dispatch]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [handleClose]);
+
   const typeColors = {
     Work: 'bg-blue-500',
     Personal: 'bg-emerald-500',
     Holiday: 'bg-rose-500',
+    Milestone: 'bg-amber-500',
+  };
+
+  const typeLabels = {
+    Work: 'Work / Deep Focus',
+    Personal: 'Personal Growth',
+    Holiday: 'Rest / Holiday',
+    Milestone: 'Milestone',
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl"
+      onClick={handleClose}
+    >
       <div 
         className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -45,14 +67,14 @@ const EventModal = () => {
               </h2>
             </div>
             <button
-              onClick={() => dispatch(toggleModal())}
+              onClick={handleClose}
               className="text-3xl text-[#8c6f47] hover:text-[#5c4730] transition-colors leading-none"
             >
               ×
             </button>
           </div>
           <p className="text-[#6b5a44] mt-2 text-lg">
-            {selectedDate ? new Date(selectedDate).toLocaleDateString('en-US', { 
+            {selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { 
               weekday: 'long', 
               month: 'long', 
               day: 'numeric',
@@ -78,26 +100,26 @@ const EventModal = () => {
             />
           </div>
 
-          {/* Category Selection */}
+          {/* Category Selection — aligned with legend types */}
           <div>
             <label className="block text-sm font-medium text-[#5c4730] mb-3">
               Category
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {['Work', 'Personal', 'Holiday'].map((category) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {['Work', 'Personal', 'Holiday', 'Milestone'].map((category) => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => setType(category)}
-                  className={`py-4 px-5 rounded-2xl border transition-all flex flex-col items-center gap-2
+                  className={`py-4 px-4 rounded-2xl border transition-all flex flex-col items-center gap-2
                     ${type === category 
                       ? 'border-[#8c6f47] bg-[#f9f5eb] shadow-sm' 
                       : 'border-transparent hover:bg-white hover:border-gray-200'
                     }`}
                 >
                   <div className={`w-5 h-5 rounded-full ${typeColors[category]}`} />
-                  <span className="text-sm font-medium text-[#3c2f1f]">
-                    {category}
+                  <span className="text-xs font-medium text-[#3c2f1f]">
+                    {typeLabels[category]}
                   </span>
                 </button>
               ))}
@@ -108,7 +130,7 @@ const EventModal = () => {
           <div className="flex gap-4 pt-4">
             <button 
               type="button"
-              onClick={() => dispatch(toggleModal())}
+              onClick={handleClose}
               className="flex-1 py-4 text-[#6b5a44] font-medium hover:bg-gray-100 rounded-2xl transition-colors"
             >
               Cancel
