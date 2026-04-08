@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectDate, toggleModal } from "../../features/calendarSlice";
+import { selectDate, toggleModal, deleteEvent, makeSelectEventsByDate } from "../../features/calendarSlice";
 
 const DayCell = ({ date, isToday }) => {
   const dispatch = useDispatch();
 
-  const events = useSelector((state) =>
-    state.calendar.events.filter((e) => e.date === date)
-  );
+  // Memoized selector — prevents new array on every render
+  const selectEvents = useMemo(() => makeSelectEventsByDate(date), [date]);
+  const events = useSelector(selectEvents);
 
   const dayNumber = new Date(date).getDate();
   const isWeekend = [0, 6].includes(new Date(date).getDay());
+
+  const typeColorMap = {
+    Work: "bg-blue-500",
+    Personal: "bg-emerald-500",
+    Holiday: "bg-rose-500",
+    Milestone: "bg-amber-500",
+  };
 
   return (
     <div
@@ -37,13 +44,13 @@ const DayCell = ({ date, isToday }) => {
           {dayNumber}
         </span>
 
-        {/* Event Indicator Dots */}
+        {/* Event Indicator Dots — colored by type */}
         {events.length > 0 && (
           <div className="flex gap-1">
-            {events.slice(0, 3).map((_, i) => (
+            {events.slice(0, 3).map((event, i) => (
               <div
                 key={i}
-                className="w-2 h-2 rounded-full bg-amber-600/70"
+                className={`w-2 h-2 rounded-full ${typeColorMap[event.type] || "bg-amber-600/70"}`}
               />
             ))}
           </div>
@@ -56,9 +63,20 @@ const DayCell = ({ date, isToday }) => {
           events.slice(0, 3).map((event) => (
             <div
               key={event.id}
-              className="text-xs leading-tight text-[#4a3c2a] font-medium line-clamp-1"
+              className="group/event flex items-center justify-between text-xs leading-tight text-[#4a3c2a] font-medium"
             >
-              • {event.title}
+              <span className="line-clamp-1">• {event.title}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dispatch(deleteEvent(event.id));
+                }}
+                className="opacity-0 group-hover/event:opacity-100 ml-1 text-rose-400 hover:text-rose-600 
+                           transition-opacity text-sm leading-none flex-shrink-0"
+                title="Delete event"
+              >
+                ×
+              </button>
             </div>
           ))
         ) : (
