@@ -3,8 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { changeMonth } from "../../features/calendarSlice";
 import DayCell from "./DayCell";
 
+// Helper: get today's date string in local timezone
+const getLocalDateStr = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+};
+
 const formatDate = (year, month, day) => {
-  return new Date(year, month, day).toISOString().split("T")[0];
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 };
 
 const CalendarGrid = () => {
@@ -22,7 +28,7 @@ const CalendarGrid = () => {
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getLocalDateStr();
 
   const handlePrevMonth = () => {
     dispatch(changeMonth(new Date(year, month - 1, 1).toISOString()));
@@ -36,7 +42,7 @@ const CalendarGrid = () => {
 
   return (
     <div className="max-w-3xl mx-auto pt-12 pb-20">
-      {/* Main Calendar Container – Paper + Depth */}
+      {/* Main Calendar Container */}
       <div className="relative bg-[#f9f5eb] shadow-2xl rounded-3xl overflow-hidden border border-[#d4c3a8]">
         
         {/* Spiral Binding */}
@@ -51,7 +57,7 @@ const CalendarGrid = () => {
           ))}
         </div>
 
-        {/* Hero Image Section – Better hierarchy & contrast */}
+        {/* Hero Image Section */}
         <div className="relative h-80 bg-zinc-900">
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -60,10 +66,8 @@ const CalendarGrid = () => {
             }}
           />
           
-          {/* Improved gradient overlay for better text readability */}
           <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/20 to-transparent" />
 
-          {/* Month & Year – Strong visual hierarchy */}
           <div className="absolute bottom-8 left-8 text-white">
             <p className="text-sm uppercase tracking-[3px] font-medium opacity-90">Momentum • {year}</p>
             <h1 className="text-7xl font-black tracking-[-0.04em] leading-none text-white drop-shadow-md">
@@ -71,27 +75,26 @@ const CalendarGrid = () => {
             </h1>
           </div>
 
-          {/* Motivational tagline */}
           <div className="absolute bottom-8 right-8 text-right">
             <p className="text-white/90 text-sm font-medium">Keep climbing</p>
           </div>
         </div>
 
-        {/* Calendar Grid Area – Excellent whitespace & alignment */}
+        {/* Calendar Grid Area */}
         <div className="p-8 bg-[#f9f5eb]">
-          {/* Weekday Headers – Higher contrast */}
+          {/* Weekday Headers */}
           <div className="grid grid-cols-7 mb-4">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
               <div
                 key={day}
                 className="text-center text-xs font-semibold text-[#8c6f47] tracking-widest py-3"
               >
-                {day}
+              {day}
               </div>
             ))}
           </div>
 
-          {/* Days Grid – Consistent spacing */}
+          {/* Days Grid */}
           <div className="grid grid-cols-7 gap-3">
             {blanks.map((_, i) => (
               <div
@@ -114,7 +117,7 @@ const CalendarGrid = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation – Clean & tactile */}
+        {/* Bottom Navigation */}
         <div className="flex justify-between items-center px-8 py-6 border-t border-[#e5d9c0] bg-[#f9f5eb]">
           <button
             onClick={handlePrevMonth}
