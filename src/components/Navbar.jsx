@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 
 const GithubIcon = ({ className }) => (
@@ -7,10 +8,10 @@ const GithubIcon = ({ className }) => (
   </svg>
 );
 
-const Navbar = ({ activeTab, setActiveTab }) => {
+const Navbar = () => {
   const navItems = [
-    { id: "home", label: "Home" },
-    { id: "calendar", label: "Calendar" },
+    { to: "/", label: "Home" },
+    { to: "/calendar", label: "Calendar" },
   ];
 
   return (
@@ -18,39 +19,41 @@ const Navbar = ({ activeTab, setActiveTab }) => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         
         {/* Logo */}
-        <div className="flex items-center">
+        <NavLink to="/" className="flex items-center">
           <img
             src={Logo}
             alt="Momentum Logo"
             draggable="false"
             className="h-10 w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
           />
-        </div>
+        </NavLink>
 
         {/* Nav */}
         <nav className="flex items-center gap-3 md:gap-6">
           <div className="flex items-center gap-1 md:gap-2">
-            {navItems.map((item) => {
-              const isActive = activeTab === item.id;
-
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-300 ${
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/"}
+                className={({ isActive }) =>
+                  `relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-300 ${
                     isActive
                       ? "bg-blue-500/10 text-slate-800 shadow-sm"
                       : "text-slate-500 hover:bg-white/40 hover:text-slate-800"
-                  }`}
-                >
-                  {item.label}
-
-                  {isActive && (
-                    <span className="absolute bottom-0 left-1/2 h-[2px] w-6 -translate-x-1/2 rounded-full bg-blue-500" />
-                  )}
-                </button>
-              );
-            })}
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-1/2 h-[2px] w-6 -translate-x-1/2 rounded-full bg-blue-500" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
           </div>
 
           {/* Divider */}
@@ -58,7 +61,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
 
           {/* GitHub */}
           <a
-            href="https://github.com/yourusername"
+            href="https://github.com/saketX01"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-9 w-9 items-center justify-center rounded-md text-slate-500 transition-all duration-300 hover:bg-white/40 hover:text-slate-800"
