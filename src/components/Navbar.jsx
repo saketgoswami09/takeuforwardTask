@@ -16,7 +16,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-white/50 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         
         {/* Logo */}
         <NavLink to="/" className="flex items-center">
@@ -24,12 +24,12 @@ const Navbar = () => {
             src={Logo}
             alt="Momentum Logo"
             draggable="false"
-            className="h-10 w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
+            className="h-8 sm:h-10 w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
           />
         </NavLink>
 
         {/* Nav */}
-        <nav className="flex items-center gap-3 md:gap-6">
+        <nav className="flex items-center gap-2 sm:gap-3 md:gap-6">
           <div className="flex items-center gap-1 md:gap-2">
             {navItems.map((item) => (
               <NavLink
@@ -37,7 +37,7 @@ const Navbar = () => {
                 to={item.to}
                 end={item.to === "/"}
                 className={({ isActive }) =>
-                  `relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                  `relative rounded-md px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-300 ${
                     isActive
                       ? "bg-blue-500/10 text-slate-800 shadow-sm"
                       : "text-slate-500 hover:bg-white/40 hover:text-slate-800"
@@ -48,7 +48,7 @@ const Navbar = () => {
                   <>
                     {item.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-1/2 h-[2px] w-6 -translate-x-1/2 rounded-full bg-blue-500" />
+                      <span className="absolute bottom-0 left-1/2 h-[2px] w-5 sm:w-6 -translate-x-1/2 rounded-full bg-blue-500" />
                     )}
                   </>
                 )}
@@ -57,17 +57,17 @@ const Navbar = () => {
           </div>
 
           {/* Divider */}
-          <div className="mx-2 hidden h-4 w-px bg-slate-300 md:block" />
+          <div className="mx-1 sm:mx-2 hidden sm:block h-4 w-px bg-slate-300" />
 
           {/* GitHub */}
           <a
             href="https://github.com/saketX01"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-9 w-9 items-center justify-center rounded-md text-slate-500 transition-all duration-300 hover:bg-white/40 hover:text-slate-800"
+            className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-slate-500 transition-all duration-300 hover:bg-white/40 hover:text-slate-800"
             aria-label="GitHub Repository"
           >
-            <GithubIcon className="h-5 w-5" />
+            <GithubIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </a>
         </nav>
       </div>
