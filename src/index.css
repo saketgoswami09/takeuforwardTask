@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -11,4 +16,21 @@
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+/* Hide scrollbar on calendar grid for mobile horizontal scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch-friendly tap targets on mobile */
+@media (max-width: 640px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
