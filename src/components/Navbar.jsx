@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 
@@ -8,7 +8,24 @@ const GithubIcon = ({ className }) => (
   </svg>
 );
 
+const MenuIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const CloseIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
 const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const navItems = [
     { to: "/", label: "Home" },
     { to: "/calendar", label: "Calendar" },
@@ -24,12 +41,12 @@ const Navbar = () => {
             src={Logo}
             alt="Momentum Logo"
             draggable="false"
-            className="h-8 sm:h-10 w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
+            className="h-8 sm:h-10 w-auto max-w-[140px] sm:max-w-none object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
           />
         </NavLink>
 
-        {/* Nav */}
-        <nav className="flex items-center gap-2 sm:gap-3 md:gap-6">
+        {/* Desktop Nav */}
+        <nav className="hidden sm:flex items-center gap-2 sm:gap-3 md:gap-6">
           <div className="flex items-center gap-1 md:gap-2">
             {navItems.map((item) => (
               <NavLink
@@ -57,7 +74,7 @@ const Navbar = () => {
           </div>
 
           {/* Divider */}
-          <div className="mx-1 sm:mx-2 hidden sm:block h-4 w-px bg-slate-300" />
+          <div className="mx-1 sm:mx-2 h-4 w-px bg-slate-300" />
 
           {/* GitHub */}
           <a
@@ -70,7 +87,56 @@ const Navbar = () => {
             <GithubIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </a>
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="sm:hidden flex items-center justify-center h-10 w-10 rounded-lg text-slate-600 hover:bg-white/40 transition-colors"
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? (
+            <CloseIcon className="h-5 w-5" />
+          ) : (
+            <MenuIcon className="h-5 w-5" />
+          )}
+        </button>
       </div>
+
+      {/* Mobile dropdown */}
+      {mobileOpen && (
+        <div className="sm:hidden border-t border-white/20 bg-white/80 backdrop-blur-xl animate-[slideDown_0.2s_ease-out]">
+          <div className="px-4 py-3 space-y-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/"}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `block rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "bg-blue-500/10 text-slate-800"
+                      : "text-slate-500 hover:bg-white/40 hover:text-slate-800"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+            
+            {/* Mobile GitHub link */}
+            <a
+              href="https://github.com/saketX01"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-500 hover:bg-white/40 hover:text-slate-800 transition-all"
+            >
+              <GithubIcon className="h-4 w-4" />
+              GitHub
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
