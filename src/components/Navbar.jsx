@@ -78,7 +78,7 @@ const Navbar = () => {
 
           {/* GitHub */}
           <a
-            href="https://github.com/saketX01"
+            href="https://github.com/saketgoswami09/takeuforwardTask.git"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-slate-500 transition-all duration-300 hover:bg-white/40 hover:text-slate-800"
@@ -126,7 +126,7 @@ const Navbar = () => {
             
             {/* Mobile GitHub link */}
             <a
-              href="https://github.com/saketX01"
+              href="https://github.com/saketgoswami09/takeuforwardTask.git"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-500 hover:bg-white/40 hover:text-slate-800 transition-all"
