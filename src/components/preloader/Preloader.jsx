@@ -9,11 +9,12 @@ const Preloader = ({ loaderRef }) => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const letters = textRef.current.querySelectorAll(".letter");
+      const isMobile = window.innerWidth < 640;
 
       gsap.to(bgRef.current, {
         scale: 1.08,
-        x: -20,
-        y: -10,
+        x: isMobile ? -10 : -20,
+        y: isMobile ? -5 : -10,
         duration: 6,
         ease: "sine.inOut",
         repeat: -1,
@@ -21,7 +22,7 @@ const Preloader = ({ loaderRef }) => {
       });
 
       gsap.to(glassRef.current, {
-        y: -8,
+        y: isMobile ? -4 : -8,
         duration: 3,
         ease: "sine.inOut",
         repeat: -1,
@@ -50,23 +51,22 @@ const Preloader = ({ loaderRef }) => {
   }, []);
 
   return (
-    <div ref={loaderRef} className="fixed inset-0 z-[999] bg-amber-500  overflow-hidden">
+    <div ref={loaderRef} className="fixed inset-0 z-[999] bg-amber-500 overflow-hidden">
       <div
         ref={bgRef}
         className="absolute inset-0 bg-cover bg-center scale-105"
-        
       />
 
       <div className="absolute inset-0 bg-black/20" />
 
-      <div className="relative flex h-full items-center justify-center">
+      <div className="relative flex h-full items-center justify-center px-4 sm:px-6">
         <div
           ref={glassRef}
-          className="rounded-[32px] border border-white/20 bg-white/10 px-10 py-8 backdrop-blur-2xl"
+          className="rounded-2xl sm:rounded-[32px] border border-white/20 bg-white/10 px-5 py-5 sm:px-8 sm:py-6 md:px-10 md:py-8 backdrop-blur-2xl max-w-[92vw]"
         >
           <div
             ref={textRef}
-            className="flex overflow-hidden text-6xl font-black uppercase tracking-[0.25em] text-white"
+            className="flex overflow-hidden text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-[0.12em] sm:tracking-[0.18em] md:tracking-[0.25em] text-white"
           >
             {"Momentum".split("").map((char, index) => (
               <span key={index} className="letter inline-block">
