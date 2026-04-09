@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import Momentum from "../assets/momentum-logo-text.png";
 
-const Home = ({ onSwitch }) => {
+const Home = () => {
+  const navigate = useNavigate();
   const containerRef = useRef(null);
   const elementsRef = useRef([]);
   const logoRef = useRef(null);
@@ -11,14 +13,12 @@ const Home = ({ onSwitch }) => {
   const borderRef = useRef(null);
   const glowRef = useRef(null);
 
-  const addToRefs = (el) => {
-    if (el && !elementsRef.current.includes(el)) {
-      elementsRef.current.push(el);
-    }
-  };
-
   useGSAP(
     () => {
+      elementsRef.current = [];
+      const refEls = containerRef.current?.querySelectorAll('[data-animate]');
+      if (refEls) elementsRef.current = Array.from(refEls);
+
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (prefersReducedMotion) {
@@ -29,23 +29,22 @@ const Home = ({ onSwitch }) => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       gsap.set(elementsRef.current, {
-        y: 60,
+        y: 40,
         opacity: 0,
-        filter: "blur(10px)",
+        filter: "blur(8px)",
       });
 
-      // Staggered entrance – clear hierarchy
       tl.to(elementsRef.current, {
         y: 0,
         opacity: 1,
         filter: "blur(0px)",
-        duration: 1.6,
-        stagger: 0.14,
+        duration: 1.4,
+        stagger: 0.12,
       });
 
-      // Gentle floating logo
+      // Gentle floating logo — reduced on mobile
       gsap.to(logoRef.current, {
-        y: -22,
+        y: window.innerWidth < 640 ? -12 : -22,
         duration: 4,
         ease: "sine.inOut",
         yoyo: true,
@@ -65,14 +64,14 @@ const Home = ({ onSwitch }) => {
 
   const handleMouseMove = (e) => {
     if (!ctaRef.current || !glowRef.current) return;
-        const bounds = ctaRef.current.getBoundingClientRect();
+    const bounds = ctaRef.current.getBoundingClientRect();
     const x = (e.clientX - (bounds.left + bounds.width / 2)) * 0.15;
     const y = (e.clientY - (bounds.top + bounds.height / 2)) * 0.15;
 
     gsap.to(ctaRef.current, { x, y, duration: 0.8, ease: "power3.out" });
     gsap.to(glowRef.current, { scale: 1.35, opacity: 0.75, duration: 0.5 });
   };
-  
+
   const handleMouseLeave = () => {
     if (!ctaRef.current || !glowRef.current) return;
     gsap.to(ctaRef.current, { x: 0, y: 0, duration: 1.2, ease: "elastic.out(1, 0.4)" });
@@ -82,71 +81,69 @@ const Home = ({ onSwitch }) => {
   return (
     <main
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden bg-[#f8fafc]"
+      className="relative min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#f8fafc]"
     >
-      {/* Ambient background glows – subtle depth */}
+      {/* Ambient background glows — scaled down on mobile */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute -top-40 -left-40 w-150 h-150 rounded-full bg-blue-400/10 blur-[140px]" />
-        <div className="absolute -bottom-40 -right-40 w-175 h-175 rounded-full bg-cyan-300/15 blur-[160px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 rounded-full bg-indigo-200/20 blur-[120px]" />
+        <div className="absolute -top-20 sm:-top-40 -left-20 sm:-left-40 w-72 sm:w-150 h-72 sm:h-150 rounded-full bg-blue-400/10 blur-[80px] sm:blur-[140px]" />
+        <div className="absolute -bottom-20 sm:-bottom-40 -right-20 sm:-right-40 w-80 sm:w-175 h-80 sm:h-175 rounded-full bg-cyan-300/15 blur-[100px] sm:blur-[160px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-125 h-64 sm:h-125 rounded-full bg-indigo-200/20 blur-[80px] sm:blur-[120px]" />
       </div>
 
-      <section className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+      <section className="relative z-10 flex h-full min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 sm:px-6 text-center py-12 sm:py-0">
         
-        {/* Subtitle – subtle but clear */}
+        {/* Subtitle */}
         <p
-          ref={addToRefs}
-          className="mb-8 text-sm uppercase tracking-[0.5em] text-slate-500 font-medium"
+          data-animate
+          className="mb-4 sm:mb-8 text-[10px] sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.5em] text-slate-500 font-medium"
         >
           YOUR JOURNEY STARTS HERE
         </p>
 
-        {/* Logo Container – strongest visual hierarchy */}
+        {/* Logo Container */}
         <div
-          ref={addToRefs}
-          className="relative flex items-center justify-center w-70 md:w-105 lg:w-130 aspect-square mb-10"
+          data-animate
+          className="relative flex items-center justify-center w-48 sm:w-70 md:w-105 lg:w-130 aspect-square mb-6 sm:mb-10"
         >
-          {/* Large faint watermark */}
-          <h1 className="absolute select-none pointer-events-none text-[110px] md:text-[160px] lg:text-[210px] font-black uppercase tracking-[-0.08em] text-black/[0.035]">
+          <h1 className="absolute select-none pointer-events-none text-[70px] sm:text-[110px] md:text-[160px] lg:text-[210px] font-black uppercase tracking-[-0.08em] text-black/[0.035]">
             MOMENTUM
           </h1>
 
-          {/* Logo */}
           <img
             ref={logoRef}
             src={Momentum}
             alt="Momentum"
             draggable="false"
-            className="relative z-10 w-60 md:w-85 lg:w-105 drop-shadow-2xl"
+            className="relative z-10 w-40 sm:w-60 md:w-85 lg:w-105 drop-shadow-2xl"
           />
         </div>
 
-        {/* Description – excellent readability */}
+        {/* Description */}
         <p
-          ref={addToRefs}
-          className="max-w-2xl text-lg leading-relaxed text-slate-600 font-medium px-4"
+          data-animate
+          className="max-w-xs sm:max-w-lg md:max-w-2xl text-sm sm:text-base md:text-lg leading-relaxed text-slate-600 font-medium px-2 sm:px-4"
         >
           A visual productivity planner that turns your goals, streaks, and monthly progress into a climb you can actually see.
         </p>
 
-        {/* CTA – clear primary action with generous whitespace */}
-        <div ref={addToRefs} className="mt-20">
+        {/* CTA */}
+        <div data-animate className="mt-10 sm:mt-16 md:mt-20">
           <button
             ref={ctaRef}
-            onClick={onSwitch}
+            onClick={() => navigate("/calendar")}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="group relative overflow-hidden rounded-3xl p-px focus:outline-none active:scale-[0.985] transition-transform"
+            className="group relative overflow-hidden rounded-2xl sm:rounded-3xl p-px focus:outline-none active:scale-[0.985] transition-transform"
           >
             {/* Spinning conic border */}
             <span
               ref={borderRef}
-              className="absolute inset-0 rounded-3xl bg-[conic-gradient(from_0deg,#3b82f6_0deg,#67e8f9_120deg,#3b82f6_240deg,transparent_360deg)]"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-[conic-gradient(from_0deg,#3b82f6_0deg,#67e8f9_120deg,#3b82f6_240deg,transparent_360deg)]"
             />
 
             {/* Button body */}
-            <span className="relative block rounded-[22px] bg-linear-to-br from-slate-900 via-zinc-900 to-black px-14 py-7 border border-white/10 shadow-2xl backdrop-blur-xl">
-              <span className="relative z-10 text-xl font-semibold tracking-wide text-white">
+            <span className="relative block rounded-[18px] sm:rounded-[22px] bg-linear-to-br from-slate-900 via-zinc-900 to-black px-8 py-4 sm:px-14 sm:py-7 border border-white/10 shadow-2xl backdrop-blur-xl">
+              <span className="relative z-10 text-base sm:text-xl font-semibold tracking-wide text-white">
                 Start Your Climb
               </span>
 
